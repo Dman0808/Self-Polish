@@ -8,9 +8,9 @@
 """
 
 from openai_utils import create_response, create_response_chat, answer_cleansing
-from utils import specific_function1  # Replace with actual function names
-import traceback
+from utils import specific_function1, specific_function2  # Replace with actual function names
 import time
+import traceback
 
 
 class AnswerMethod():

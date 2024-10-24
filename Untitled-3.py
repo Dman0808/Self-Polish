@@ -169,12 +169,34 @@ class ProblemSelfPolish(ProblemMethod):
                     elif self.final_choose == "last_one":
                         consistent_answer = last_answer
                     elif self.final_choose == "first_one":
-                        consistent_answer = 
+                        consistent_answer = first_answer
                     elif self.final_choose == "vote":
                         consistent_answer = vote_answer
 
                     print("More than {} times!".format(self.max_times))
                     break
+                # new problem
+                new_generated_question = self.generate_one_new_quesiton(
+                    eng=self.eng,
+                    dataset=dataset,
+                    prompt_index=prompt_index,
+                    original_question=last_question
+                )
+                print("The {} times generated: {}".format(times, new_generated_question))
+
+                # new answer
+                new_answer,new_correctness = self.process_problem_for_one_time(question=new_generated_question,
+                                          answer=answer,
+                                          direct_answer_trigger_for_fewshot=direct_answer_trigger_for_fewshot,
+                                          dataset=dataset,
+                                          )
+                if times == 1: # Store the first answer
+                    consistent_answer = first_answer # Use the stored first answer
+                elif self.final_choose == "vote":
+                    consistent_answer = vote_answer
+
+                print("More than {} times!".format(self.max_times))
+                break
                 try:
                     # new problem
                     new_generated_question = self.generate_one_new_quesiton(
@@ -191,6 +213,8 @@ class ProblemSelfPolish(ProblemMethod):
                                               direct_answer_trigger_for_fewshot=direct_answer_trigger_for_fewshot,
                                               dataset=dataset,
                                               )
+                    if times == 1:
+                        first_answer = new_answer
 
                     if dataset == "aqua" or dataset=="mathqa":
                         if last_answer != None and new_answer != None and last_answer == new_answer:
